@@ -1,3 +1,5 @@
+[![Pipeline-CI](https://github.com/water-pilot/api-main/actions/workflows/ci.yml/badge.svg)](https://github.com/water-pilot/api-main/actions/workflows/ci.yml)
+
 - [Règles Git pour notre organisation](#règles-git-pour-notre-organisation)
   - [Branches](#branches)
   - [Règles de bonne conduite](#règles-de-bonne-conduite)
