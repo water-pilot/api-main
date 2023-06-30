@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,18 +23,18 @@ class LoginController extends AbstractController
     {
         /** @var User|null $user */
         $user = $this->security->getUser();
-        
-         if (null === $user) {
-             return $this->json([
-                 'message' => 'missing credentials',
-             ], Response::HTTP_UNAUTHORIZED);
-         }
 
-         $token = "..."; // somehow create an API token for $user
+        if (null === $user) {
+            return $this->json([
+                'message' => 'missing credentials',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
 
-          return $this->json([     
-             'user'  => $user->getUserIdentifier(),
-             'token' => $token,
-          ]);
-      }
+        $token = "..."; // somehow create an API token for $user
+
+        return $this->json([
+           'user'  => $user->getUserIdentifier(),
+           'token' => $token,
+        ]);
+    }
 }
