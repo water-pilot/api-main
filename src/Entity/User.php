@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,8 +29,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Location $location = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $longitude = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $latitude = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Sensor::class, orphanRemoval: true)]
+    private Collection $sensors;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Electrovalve::class, orphanRemoval: true)]
+    private Collection $electrovalves;
+
+    public function __construct()
+    {
+        $this->sensors = new ArrayCollection();
+        $this->electrovalves = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -100,16 +120,99 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getLocation(): ?Location
+    public function getLongitude(): ?string
     {
-        return $this->location;
+        return $this->longitude;
     }
 
-    public function setLocation(?Location $location): static
+    public function setLongitude(?string $longitude): static
     {
-        $this->location = $location;
+        $this->longitude = $longitude;
 
         return $this;
     }
 
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?string $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sensor>
+     */
+    public function getSensors(): Collection
+    {
+        return $this->sensors;
+    }
+
+    public function addSensor(Sensor $sensor): static
+    {
+        if (!$this->sensors->contains($sensor)) {
+            $this->sensors->add($sensor);
+            $sensor->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSensor(Sensor $sensor): static
+    {
+        if ($this->sensors->removeElement($sensor)) {
+            // set the owning side to null (unless already changed)
+            if ($sensor->getUser() === $this) {
+                $sensor->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Electrovalve>
+     */
+    public function getElectrovalves(): Collection
+    {
+        return $this->electrovalves;
+    }
+
+    public function addElectrovalf(Electrovalve $electrovalf): static
+    {
+        if (!$this->electrovalves->contains($electrovalf)) {
+            $this->electrovalves->add($electrovalf);
+            $electrovalf->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeElectrovalf(Electrovalve $electrovalf): static
+    {
+        if ($this->electrovalves->removeElement($electrovalf)) {
+            // set the owning side to null (unless already changed)
+            if ($electrovalf->getUser() === $this) {
+                $electrovalf->setUser(null);
+            }
+        }
+
+        return $this;
+    }
 }

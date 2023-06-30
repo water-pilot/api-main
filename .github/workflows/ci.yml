@@ -2,7 +2,9 @@
 name: Pipeline-CI
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop ,
+                axldcode/feat/add-symfony-and-entities
+    ]
 jobs:
   ci:
     runs-on: ubuntu-latest
