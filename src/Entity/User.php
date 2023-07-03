@@ -9,35 +9,54 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']],
+    paginationMaximumItemsPerPage: 10,
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read','user:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['user:read','user:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['user:write'])]
+    #[Assert\PasswordStrength(
+        minScore: 4,
+        message: 'Your password should be at least {{ limit }} characters long and should include at least one uppercase letter, one lowercase letter, one number, and one special character.'
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read','user:write'])]
     private ?string $longitude = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read','user:write'])]
     private ?string $latitude = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read','user:write'])]
     private ?string $city = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Sensor::class, orphanRemoval: true)]
@@ -50,6 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->sensors = new ArrayCollection();
         $this->electrovalves = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
     }
 
     public function getId(): ?int
