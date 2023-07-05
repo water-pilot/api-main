@@ -20,5 +20,20 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\State\ElectrovalveProcessor:
+        arguments:
+            $tokenStorage: '@security.token_storage'
+            $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
+            $removeProcessor: '@api_platform.doctrine.orm.state.remove_processor'
+            $logger: '@logger'
+
+    App\State\ValveSettingsProcessor:
+        arguments:
+            $tokenStorage: '@security.token_storage'
+            $electrovalveRepository: '@App\Repository\ElectrovalveRepository'
+            $logger: '@logger'
+            $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -8,9 +8,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\State\ElectrovalveProcessor;
 
 #[ORM\Entity(repositoryClass: ElectrovalveRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    processor: ElectrovalveProcessor::class,
+)]
+
 class Electrovalve
 {
     #[ORM\Id]

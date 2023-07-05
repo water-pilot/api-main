@@ -40,7 +40,7 @@ security:
             provider: app_user_provider
 
     access_control:
-        - { path: ^/api,       roles: PUBLIC_ACCESS }
+        #- { path: ^/api,       roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: ROLE_ADMIN , methods:[GET, PUT, DELETE, PATCH] }
         - { path: ^/api/users, roles: PUBLIC_ACCESS , methods:[POST] }
@@ -48,6 +48,7 @@ security:
         - { path: ^/api/sensors, roles: IS_AUTHENTICATED_FULLY}
         - { path: ^/api/irrigations, roles: IS_AUTHENTICATED_FULLY}
         - { path: ^/api/schedules, roles: IS_AUTHENTICATED_FULLY}
+        - { path: ^/api,       roles: PUBLIC_ACCESS }
 
 
             # activate different ways to authenticate

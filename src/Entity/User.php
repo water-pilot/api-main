@@ -42,8 +42,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups(['user:write'])]
     #[Assert\PasswordStrength(
-        minScore: 4,
-        message: 'Your password should be at least {{ limit }} characters long and should include at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        minScore: 2,
+        message: 'Your password should be at least characters long and should include at least one uppercase letter, one lowercase letter, one number, and one special character.'
     )]
     private ?string $password = null;
 
@@ -216,11 +216,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->electrovalves;
     }
 
-    public function addElectrovalf(Electrovalve $electrovalf): static
+    public function addElectrovalves(Electrovalve $electrovalves): static
     {
-        if (!$this->electrovalves->contains($electrovalf)) {
-            $this->electrovalves->add($electrovalf);
-            $electrovalf->setUser($this);
+        if (!$this->electrovalves->contains($electrovalves)) {
+            $this->electrovalves->add($electrovalves);
+            $electrovalves->setUser($this);
         }
 
         return $this;
