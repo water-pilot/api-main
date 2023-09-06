@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+$token = "";
 
 class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
@@ -32,12 +33,14 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 
         // Ajoute le cookie à la réponse
         $response->headers->setCookie($cookie);
+
+        return $response;
     }
 
     // Implémentation de la méthode requise par l'interface
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
     {
         // Ici, vous pouvez renvoyer une réponse appropriée ou laisser votre logique actuelle gérer cela.
-        return new Response("Authentication successful"); // exemple simple
+        return new Response("Authentication successful".$token); // exemple simple
     }
 }
