@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
-$token = "";
+
 
 class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
@@ -41,6 +41,6 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
     {
         // Ici, vous pouvez renvoyer une réponse appropriée ou laisser votre logique actuelle gérer cela.
-        return new Response("Authentication successful".$token); // exemple simple
+        return new Response("Authentication successful"); // exemple simple
     }
 }
