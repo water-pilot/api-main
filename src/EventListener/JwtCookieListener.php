@@ -34,7 +34,7 @@ class JwtCookieListener
             $request->headers->set('Authorization', 'Bearer ' . $token);
 
             // Log the token
-            $this->logger->info('JWT from cookie: ' . $token);
+            $this->logger->notice('JWTCookieListener from cookie: ' . $token);
         }
     }
 }

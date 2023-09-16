@@ -3,41 +3,37 @@
 namespace App\Security;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function onAuthenticationSuccessResponse(AuthenticationSuccessEvent $event)
     {
-        $response = $event->getResponse();
         $data = $event->getData();
         $token = $data['token'];
 
-        // Création du cookie
-        $cookie = new Cookie(
-            'BEARER',        // Nom du cookie
-            $token,          // Valeur du token
-            new \DateTime('+1 hour'),  // Expiration du cookie, ajustez selon vos besoins
-            '/',             // Chemin
-            null,            // Domaine
-            true,            // Sécurisé
-            true,            // httpOnly
-            false,
-            'strict'
-        );
+        $this->logger->notice('onAuthenticationSuccessResponse is called');
 
-        // Ajoute le cookie à la réponse
-        $response->headers->setCookie($cookie);
+        return new Response(json_encode(['token' => $token]), 200, ['Content-Type' => 'application/json']);
     }
 
-    // Implémentation de la méthode requise par l'interface
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
     {
-        // Ici, vous pouvez renvoyer une réponse appropriée ou laisser votre logique actuelle gérer cela.
-        return new Response("Authentication successful"); // exemple simple
+        $this->logger->notice('Inside onAuthenticationSuccess');
+
+        // Ici, nous supposons que le JWT sera traité dans la méthode onAuthenticationSuccessResponse 
+        // et que nous n'avons rien de plus à faire ici.
+        return new Response("Authentication successful"); 
     }
 }
