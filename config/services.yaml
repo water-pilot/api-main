@@ -42,5 +42,10 @@ services:
           method: "onAuthenticationSuccessResponse",
         }
 
+  App\Security\JwtCookieAuthenticator:
+    arguments:
+      $logger: "@logger"
+      $jwtEncoder: "@lexik_jwt_authentication.encoder"
+
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
