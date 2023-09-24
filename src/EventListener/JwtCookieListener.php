@@ -17,6 +17,7 @@ class JwtCookieListener
 }
     public function onKernelRequest(RequestEvent $event): void
     {
+        $this->logger->notice('onKernelRequest is called');
         $request = $event->getRequest();
 
         if ($request->getMethod() === 'OPTIONS') {
