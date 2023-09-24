@@ -3,16 +3,21 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Controller\ElectrovalveCreationController;
 use App\Repository\ElectrovalveRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\State\ElectrovalveProcessor;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ElectrovalveRepository::class)]
 #[ApiResource(
+    operations: [
+        'post' => [
+            'controller' => ElectrovalveCreationController::class,
+        ],
+    ],
     normalizationContext: ['groups' => ['electrovalve:read']],
     denormalizationContext: ['groups' => ['electrovalve:write']],
 )]
