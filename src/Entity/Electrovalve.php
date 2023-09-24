@@ -9,10 +9,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\State\ElectrovalveProcessor;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ElectrovalveRepository::class)]
 #[ApiResource(
-    processor: ElectrovalveProcessor::class,
+    normalizationContext: ['groups' => ['electrovalve:read']],
+    denormalizationContext: ['groups' => ['electrovalve:write']],
 )]
 
 class Electrovalve
@@ -35,8 +37,9 @@ class Electrovalve
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\OneToOne(mappedBy: 'electrovalve', cascade: ['persist', 'remove'])]
-    private ?ValveSettings $valveSettings = null;
+    #[ORM\OneToOne(targetEntity: ValveSettings::class, mappedBy: "electrovalve", cascade: ["persist", "remove"])]
+    #[Groups(['electrovalve:read', 'electrovalve:write'])]
+    private ?ValveSettings $valveSettings;
 
     #[ORM\OneToMany(mappedBy: 'electrovalve', targetEntity: Irrigation::class, orphanRemoval: true)]
     private Collection $irrigations;

@@ -63,6 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $sensors;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Electrovalve::class, orphanRemoval: true)]
+    #[Groups(['user:read'])]
     private Collection $electrovalves;
 
     public function __construct()
