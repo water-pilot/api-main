@@ -60,9 +60,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $city = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Sensor::class, orphanRemoval: true)]
+    #[Groups(['user:read'])]
     private Collection $sensors;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Electrovalve::class, orphanRemoval: true)]
+    #[Groups(['user:read'])]
     private Collection $electrovalves;
 
     public function __construct()

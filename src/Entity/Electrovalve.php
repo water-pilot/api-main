@@ -3,16 +3,29 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use App\Controller\ElectrovalveCreationController;
+use App\DTO\ElectrovalveCreationDTO;
 use App\Repository\ElectrovalveRepository;
+use App\State\ElectrovalveProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\State\ElectrovalveProcessor;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ElectrovalveRepository::class)]
 #[ApiResource(
-    processor: ElectrovalveProcessor::class,
+    operations: [
+        new Post(
+            uriTemplate: '/electrovalves',
+            controller: ElectrovalveCreationController::class,
+            input: ElectrovalveCreationDTO::class,
+        )
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']],
+    processor: ElectrovalveProcessor::class
 )]
 
 class Electrovalve
@@ -35,10 +48,12 @@ class Electrovalve
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\OneToOne(mappedBy: 'electrovalve', cascade: ['persist', 'remove'])]
-    private ?ValveSettings $valveSettings = null;
+    #[ORM\OneToOne(mappedBy: "electrovalve", targetEntity: ValveSettings::class, cascade: ["persist", "remove"])]
+    #[Groups(['user:read', 'user:write'])]
+    private ?ValveSettings $valveSettings;
 
     #[ORM\OneToMany(mappedBy: 'electrovalve', targetEntity: Irrigation::class, orphanRemoval: true)]
+    #[Groups(['user:read', 'user:write'])]
     private Collection $irrigations;
 
     public function __construct()

@@ -8,6 +8,7 @@ use App\State\ValveSettingsProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ValveSettingsRepository::class)]
 #[ApiResource(
@@ -20,12 +21,13 @@ class ValveSettings
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column]
     private ?float $rainThreshold = null;
-
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column]
     private ?float $moistureThreshold = null;
-
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column]
     private ?int $duration = null;
 
@@ -33,7 +35,9 @@ class ValveSettings
     #[ORM\JoinColumn(nullable: false)]
     private ?Electrovalve $electrovalve = null;
 
-    #[ORM\OneToMany(mappedBy: 'valveSettings', targetEntity: Schedule::class, orphanRemoval: true)]
+    #[Groups(['user:read', 'user:write'])]
+    #[ORM\OneToMany(mappedBy: 'valveSettings', targetEntity: Schedule::class, cascade: ['persist'], orphanRemoval:
+        true)]
     private Collection $schedules;
 
     public function __construct()
