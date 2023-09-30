@@ -3,7 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Controller\ElectrovalveCreationController;
 use App\DTO\ElectrovalveCreationDTO;
 use App\Repository\ElectrovalveRepository;
@@ -17,11 +22,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ElectrovalveRepository::class)]
 #[ApiResource(
     operations: [
+        new Get(),
+        new GetCollection(),
         new Post(
             uriTemplate: '/electrovalves',
             controller: ElectrovalveCreationController::class,
             input: ElectrovalveCreationDTO::class,
-        )
+        ),
+        new Patch(),
+        new Delete()
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],
@@ -35,13 +44,16 @@ class Electrovalve
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
+    #[ORM\Column(type: Types::SMALLINT, nullable: false)]
+    #[Groups(['user:read', 'user:write'])]
     private ?int $position = null;
 
     #[ORM\Column]
+    #[Groups(['user:read', 'user:write'])]
     private ?bool $isAutomatic = null;
 
     #[ORM\ManyToOne(inversedBy: 'electrovalves')]
@@ -52,8 +64,8 @@ class Electrovalve
     #[Groups(['user:read', 'user:write'])]
     private ?ValveSettings $valveSettings;
 
-    #[ORM\OneToMany(mappedBy: 'electrovalve', targetEntity: Irrigation::class, orphanRemoval: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[ORM\OneToMany(mappedBy: 'electrovalve', targetEntity: Irrigation::class)]
+    #[Groups(['user:read'])]
     private Collection $irrigations;
 
     public function __construct()
