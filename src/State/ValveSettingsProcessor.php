@@ -30,10 +30,7 @@ class ValveSettingsProcessor implements ProcessorInterface
 
     public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-        $this->logger->error('je suis là............');
-
-        if (str_contains($operation->getName(), 'post')  && $data instanceof ValveSettings) {
-            $this->logger->error('je suis rentré............');
+        if (str_contains($operation->getName(), 'post') || str_contains($operation->getName(), 'patch')  && $data instanceof ValveSettings) {
             $token = $this->tokenStorage->getToken();
             if (null !== $token) {
                 $user = $token->getUser();
