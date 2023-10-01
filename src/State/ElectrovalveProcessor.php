@@ -30,9 +30,8 @@ class ElectrovalveProcessor implements ProcessorInterface
 
     public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
-
+        // Handle POST operation
         if (str_contains($operation->getName(), 'post') && $data instanceof Electrovalve) {
-
             // Get the User object
             $token = $this->tokenStorage->getToken();
             if (null !== $token) {
@@ -42,12 +41,21 @@ class ElectrovalveProcessor implements ProcessorInterface
                 $data->setUser($user);
             }
 
-            if ($operation instanceof DeleteOperationInterface) {
-                return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
-            }
-
-            $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
-            return $result;
+            return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
+
+        // Handle PATCH operation
+        if (str_contains($operation->getName(), 'patch') && $data instanceof Electrovalve) {
+            // Ici, vous pouvez ajouter la logique pour gérer l'opération PATCH
+            // Par exemple, mise à jour de certaines propriétés, validation, etc.
+            return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+        }
+
+        // Handle DELETE operation
+        if ($operation instanceof DeleteOperationInterface && $data instanceof Electrovalve) {
+            return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
+        }
+
+        // If neither POST nor DELETE, you might want to throw an exception or handle other operations as needed.
     }
 }
