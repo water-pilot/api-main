@@ -16,15 +16,19 @@ class Schedule
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
     #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $hourStart = null;
+
     #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $hourEnd = null;
+
     #[Groups(['user:read', 'user:write'])]
-    #[ORM\Column(length: 50)]
-    private ?string $day = null;
+    #[ORM\Column(type: "simple_array")]
+    private array $days = [];
+
     #[Groups(['user:read', 'user:write'])]
     #[ORM\Column]
     private ?bool $isActivated = null;
@@ -62,14 +66,14 @@ class Schedule
         return $this;
     }
 
-    public function getDay(): ?string
+    public function getDays(): array
     {
-        return $this->day;
+        return $this->days;
     }
 
-    public function setDay(string $day): static
+    public function setDays(array $days): static
     {
-        $this->day = $day;
+        $this->days = $days;
 
         return $this;
     }
